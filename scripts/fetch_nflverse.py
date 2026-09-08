@@ -1,7 +1,8 @@
 """
 Pulls advanced usage metrics (snap %, target share, air yards, etc.) from
-nflverse via the nfl_data_py package, plus the ID crosswalk needed to bridge
-Sleeper's numeric player IDs to nflverse's gsis_id.
+nflverse via `nflreadpy` (the actively maintained Python successor to the
+now-archived `nfl_data_py`), plus the DynastyProcess/ffverse ID crosswalk
+needed to bridge Sleeper's numeric player IDs to nflverse's gsis_id.
 
 Single flat script, mirrors fetch_sleeper.py in style.
 
@@ -12,7 +13,7 @@ import json
 import os
 from datetime import datetime
 
-import nfl_data_py as nfl
+import nflreadpy as nfl
 import pandas as pd
 
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "output")
@@ -26,20 +27,44 @@ def current_season():
 
 def fetch_id_crosswalk():
     """Returns a DataFrame with columns including sleeper_id and gsis_id,
-    used to bridge Sleeper rosters to nflverse stats."""
-    ids = nfl.import_ids()
+    used to bridge Sleeper rosters to nflverse stats. Sourced from
+    DynastyProcess/ffverse via nflreadpy's load_ff_playerids()."""
+    try:
+        ids = nfl.load_ff_playerids().to_pandas()
+    except Exception as e:
+        print(f"WARNING: id crosswalk fetch failed ({e}). Continuing with an "
+              f"empty crosswalk — merge.py will just have no gsis_id matches.")
+        return pd.DataFrame(columns=["sleeper_id", "gsis_id", "name", "position", "team"])
     keep_cols = [c for c in ["sleeper_id", "gsis_id", "name", "position", "team"] if c in ids.columns]
     return ids[keep_cols]
 
 
 def fetch_weekly_stats(season):
-    """Per-player, per-week box score stats for the season so far."""
-    return nfl.import_weekly_data([season])
+    """Per-player, per-week box score stats for the season so far.
+
+    Early in a season (or before Week 1 has been played), nflverse may not
+    have published data for `season` yet. Treat that as "no data yet" rather
+    than a fatal error — the pipeline should still run and produce
+    rosters/crosswalk even without advanced stats until games start.
+    """
+    try:
+        return nfl.load_player_stats(seasons=[season]).to_pandas()
+    except Exception as e:
+        print(f"WARNING: weekly data unavailable for season {season} ({e}). "
+              f"Continuing with empty weekly stats — likely means the season "
+              f"hasn't started yet.")
+        return pd.DataFrame()
 
 
 def fetch_snap_counts(season):
-    """Per-player, per-week snap share."""
-    return nfl.import_snap_counts([season])
+    """Per-player, per-week snap share (Pro Football Reference via nflverse).
+    Same early-season caveat as above."""
+    try:
+        return nfl.load_snap_counts(seasons=[season]).to_pandas()
+    except Exception as e:
+        print(f"WARNING: snap count data unavailable for season {season} ({e}). "
+              f"Continuing with empty snap counts.")
+        return pd.DataFrame()
 
 
 def safe_records(df):
@@ -65,8 +90,6 @@ def main():
 
     snaps_by_player = {}
     if "pfr_player_id" in snaps.columns:
-        # snap counts key off pfr_player_id in some nflverse releases; fall back
-        # to player if that column doesn't exist.
         key_col = "pfr_player_id"
     elif "player" in snaps.columns:
         key_col = "player"

@@ -25,7 +25,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests nfl_data_py pandas
+        run: pip install requests nflreadpy pandas
 
       - name: Pull Sleeper data
         run: python scripts/fetch_sleeper.py
