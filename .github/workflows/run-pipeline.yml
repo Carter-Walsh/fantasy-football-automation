@@ -1,0 +1,45 @@
+name: Fantasy Pipeline (manual)
+
+# Runs automatically every Tuesday, and can also be triggered manually from
+# the GitHub mobile app (Actions tab -> this workflow -> Run workflow) or a
+# phone Shortcut hitting the GitHub API's workflow dispatch endpoint.
+on:
+  workflow_dispatch: {}
+  schedule:
+    # 12:00 UTC every Tuesday = 8:00am ET (EDT) / 7:00am ET (EST during
+    # standard time). Adjust the hour below if you want a different local time
+    # — GitHub Actions cron is always UTC and does not shift for daylight saving.
+    - cron: "0 12 * * 2"
+
+permissions:
+  contents: write
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests nfl_data_py pandas
+
+      - name: Pull Sleeper data
+        run: python scripts/fetch_sleeper.py
+
+      - name: Pull nflverse data
+        run: python scripts/fetch_nflverse.py
+
+      - name: Merge
+        run: python scripts/merge.py
+
+      - name: Commit and push output
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/latest.json output/sleeper.json output/nflverse.json output/players_cache.json
+          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update fantasy data $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
