@@ -67,7 +67,119 @@ def fetch_snap_counts(season):
         return pd.DataFrame()
 
 
-def safe_records(df):
+def fetch_ff_opportunity(season):
+    """Precomputed Expected Fantasy Points (ffopportunity model) — lets us
+    compute Fantasy Points Over Expectation (actual - expected) per player
+    per week, the buy-low/sell-high signal. Separate dataset from
+    load_player_stats(); same early-season caveat applies."""
+    try:
+        return nfl.load_ff_opportunity(seasons=[season], stat_type="weekly").to_pandas()
+    except Exception as e:
+        print(f"WARNING: ff_opportunity data unavailable for season {season} ({e}). "
+              f"Continuing without Fantasy Points Over Expectation.")
+        return pd.DataFrame()
+
+
+def add_derived_columns(weekly):
+    """Add simple derived metrics that aren't native nflverse columns but are
+    trivial math on columns that already exist."""
+    if weekly.empty:
+        return weekly
+
+    if "receiving_air_yards" in weekly.columns and "targets" in weekly.columns:
+        weekly["adot"] = weekly.apply(
+            lambda r: (r["receiving_air_yards"] / r["targets"])
+            if r.get("targets") else None,
+            axis=1,
+        )
+
+    if "carries" in weekly.columns and "targets" in weekly.columns:
+        # Scott Barrett / PFF simple weighted opportunity (PPR weights).
+        # Meaningful for RBs; harmless (just not very meaningful) for other positions.
+        weekly["rb_weighted_opportunity"] = (
+            weekly["carries"].fillna(0) * 0.58 + weekly["targets"].fillna(0) * 1.59
+        )
+
+    return weekly
+
+
+def add_fantasy_points_over_expectation(weekly, ff_opp):
+    """Join actual fantasy_points_ppr against ffopportunity's expected
+    fantasy points, if we can find a matching expected-points column and a
+    common join key. Fails gracefully (no FPOE column added) rather than
+    guessing at an unconfirmed schema."""
+    if weekly.empty or ff_opp.empty:
+        return weekly
+
+    join_keys = [k for k in ["player_id", "week"] if k in weekly.columns and k in ff_opp.columns]
+    if len(join_keys) < 2:
+        print("WARNING: couldn't find matching player_id/week columns between "
+              "player_stats and ff_opportunity — skipping FPOE.")
+        return weekly
+
+    exp_cols = [
+        c for c in ff_opp.columns
+        if "fantasy_points" in c.lower() and ("exp" in c.lower())
+    ]
+    if not exp_cols:
+        print("WARNING: no expected-fantasy-points column found in ff_opportunity "
+              "data — skipping FPOE. (Schema may have changed upstream.)")
+        return weekly
+
+    exp_col = exp_cols[0]
+    merged = weekly.merge(
+        ff_opp[join_keys + [exp_col]],
+        on=join_keys,
+        how="left",
+    )
+    if "fantasy_points_ppr" in merged.columns:
+        merged["fantasy_points_over_expectation"] = (
+            merged["fantasy_points_ppr"] - merged[exp_col]
+        )
+    return merged
+
+
+def build_points_allowed_by_position(weekly):
+    """Aggregate, per defense faced, average PPR fantasy points allowed by
+    position — a matchup-difficulty proxy. Not schedule-adjusted (that would
+    require something like DVOA, which isn't freely available), so treat as
+    a rough signal, not a precise one."""
+    if weekly.empty or "opponent_team" not in weekly.columns:
+        return {}
+
+    result = {}
+    group_cols = [c for c in ["opponent_team", "position"] if c in weekly.columns]
+    if len(group_cols) < 2 or "fantasy_points_ppr" not in weekly.columns:
+        return {}
+
+    for (team, position), group in weekly.groupby(group_cols):
+        result.setdefault(team, {})[position] = {
+            "games": int(group["week"].nunique()) if "week" in group.columns else None,
+            "avg_ppr_allowed": round(float(group["fantasy_points_ppr"].mean()), 2),
+        }
+    return result
+
+
+def build_team_pass_rate(weekly):
+    """Approximate team pass rate from box-score attempts/carries (not true
+    play-calling rate, which needs play-by-play — this is a reasonable proxy
+    from data we already have)."""
+    if weekly.empty or "team" not in weekly.columns:
+        return {}
+    if "attempts" not in weekly.columns or "carries" not in weekly.columns:
+        return {}
+
+    result = {}
+    for team, group in weekly.groupby("team"):
+        pass_attempts = group["attempts"].sum()
+        rush_attempts = group["carries"].sum()
+        total = pass_attempts + rush_attempts
+        result[team] = {
+            "pass_attempts": int(pass_attempts),
+            "rush_attempts": int(rush_attempts),
+            "pass_rate": round(float(pass_attempts / total), 3) if total else None,
+        }
+    return result
     """Convert a DataFrame to JSON-safe records (NaN -> None)."""
     return json.loads(df.where(pd.notnull(df), None).to_json(orient="records"))
 
@@ -79,6 +191,15 @@ def main():
     crosswalk = fetch_id_crosswalk()
     weekly = fetch_weekly_stats(season)
     snaps = fetch_snap_counts(season)
+    ff_opp = fetch_ff_opportunity(season)
+
+    # Team-level context computed BEFORE derived per-player columns, since it
+    # needs the raw box-score columns (attempts/carries/fantasy_points_ppr).
+    points_allowed_by_position = build_points_allowed_by_position(weekly)
+    team_pass_rate = build_team_pass_rate(weekly)
+
+    weekly = add_derived_columns(weekly)
+    weekly = add_fantasy_points_over_expectation(weekly, ff_opp)
 
     # Index weekly stats and snaps by gsis_id (player_id in nflverse weekly data)
     # so the merge step can do a single dict lookup per player instead of a
@@ -106,6 +227,8 @@ def main():
         "weekly_stats_by_gsis_id": weekly_by_player,
         "snap_counts": snaps_by_player,
         "snap_counts_key": key_col,
+        "points_allowed_by_position": points_allowed_by_position,
+        "team_pass_rate": team_pass_rate,
     }
 
     out_path = os.path.join(OUTPUT_DIR, "nflverse.json")
