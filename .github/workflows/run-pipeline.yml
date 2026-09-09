@@ -25,7 +25,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests nflreadpy pandas
+        run: pip install requests nflreadpy pandas pyarrow
 
       - name: Pull nflverse data (shared across all leagues)
         run: python scripts/fetch_nflverse.py

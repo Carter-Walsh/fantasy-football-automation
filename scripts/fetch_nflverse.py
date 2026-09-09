@@ -180,6 +180,9 @@ def build_team_pass_rate(weekly):
             "pass_rate": round(float(pass_attempts / total), 3) if total else None,
         }
     return result
+
+
+def safe_records(df):
     """Convert a DataFrame to JSON-safe records (NaN -> None)."""
     return json.loads(df.where(pd.notnull(df), None).to_json(orient="records"))
 
