@@ -27,19 +27,23 @@ jobs:
       - name: Install dependencies
         run: pip install requests nflreadpy pandas
 
-      - name: Pull Sleeper data
-        run: python scripts/fetch_sleeper.py
-
-      - name: Pull nflverse data
+      - name: Pull nflverse data (shared across all leagues)
         run: python scripts/fetch_nflverse.py
 
-      - name: Merge
-        run: python scripts/merge.py
+      - name: Pull + merge — Threat Level Monday Night (redraft)
+        run: |
+          python scripts/fetch_sleeper.py --league-id 1370995280203223040 --output output/sleeper_redraft.json
+          python scripts/merge.py --sleeper output/sleeper_redraft.json --output output/latest_redraft.json
+
+      - name: Pull + merge — Dynasty league
+        run: |
+          python scripts/fetch_sleeper.py --league-id 1326626001475633152 --output output/sleeper_dynasty.json
+          python scripts/merge.py --sleeper output/sleeper_dynasty.json --output output/latest_dynasty.json
 
       - name: Commit and push output
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add output/latest.json output/sleeper.json output/nflverse.json output/players_cache.json
+          git add output/latest_redraft.json output/latest_dynasty.json output/sleeper_redraft.json output/sleeper_dynasty.json output/nflverse.json output/players_cache.json
           git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update fantasy data $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push
