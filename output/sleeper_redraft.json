@@ -10,6 +10,7 @@
     },
     "settings": {
       "best_ball": 0,
+      "last_report": 1,
       "waiver_budget": 100,
       "disable_adds": 0,
       "capacity_override": 0,
@@ -26,6 +27,7 @@
       "playoff_type": 0,
       "taxi_slots": 0,
       "sub_start_time_eligibility": 0,
+      "last_scored_leg": 1,
       "daily_waivers_days": 5461,
       "sub_lock_if_starter_active": 0,
       "playoff_week_start": 15,
@@ -58,14 +60,11 @@
       "daily_waivers_base": 4,
       "reserve_slots": 2,
       "reserve_allow_cov": 1,
-      "daily_waivers_last_ran": 11
+      "daily_waivers_last_ran": 15
     },
     "avatar": "7cae34c5fa5a9e86069b9857b76a3436",
     "company_id": null,
-    "shard": 401,
-    "season": "2026",
-    "season_type": "regular",
-    "sport": "nfl",
+    "last_message_id": "1405615979622416384",
     "scoring_settings": {
       "sack": 1.0,
       "fgm_40_49": 4.0,
@@ -114,17 +113,20 @@
       "pts_allow_7_13": 4.0,
       "st_ff": 1.0
     },
-    "last_message_id": "1403791393628946432",
+    "season": "2026",
+    "season_type": "regular",
+    "sport": "nfl",
+    "shard": 401,
     "last_author_avatar": null,
     "last_author_display_name": "sys",
     "last_author_id": "166666666666666666",
     "last_author_is_bot": true,
     "last_message_attachment": null,
-    "draft_id": "1370995280211632128",
     "last_message_text_map": null,
-    "last_message_time": 1789052458725,
+    "last_message_time": 1789487473926,
     "last_pinned_message_id": null,
     "last_read_id": null,
+    "draft_id": "1370995280211632128",
     "league_id": "1370995280203223040",
     "previous_league_id": "1257058433509621760",
     "roster_positions": [
@@ -144,14 +146,14 @@
       "BN",
       "BN"
     ],
-    "group_id": null,
     "bracket_id": null,
     "bracket_overrides_id": null,
+    "group_id": null,
     "loser_bracket_id": null,
     "loser_bracket_overrides_id": null,
     "total_rosters": 12
   },
-  "current_week": 1,
+  "current_week": 2,
   "season": "2026",
   "rosters_by_owner": {
     "1": {
@@ -294,6 +296,7 @@
       "team_name": "Endor Ewoks",
       "roster_id": 2,
       "player_ids": [
+        "11199",
         "11533",
         "11584",
         "11586",
@@ -323,6 +326,12 @@
         "DEN"
       ],
       "players": [
+        {
+          "sleeper_id": "11199",
+          "name": "Emari Demercado",
+          "position": "RB",
+          "team": "DAL"
+        },
         {
           "sleeper_id": "11533",
           "name": "Brandon Aubrey",
@@ -573,7 +582,7 @@
         "8146",
         "5012",
         "8167",
-        "6806",
+        "10232",
         "12711",
         "PIT"
       ],
@@ -706,7 +715,7 @@
         "7569",
         "7553",
         "9487",
-        "7567",
+        "11646",
         "2747",
         "MIN"
       ],
@@ -829,9 +838,9 @@
         "11566",
         "9221",
         "7588",
-        "8112",
+        "5872",
         "5927",
-        "12517",
+        "1466",
         "10222",
         "9754",
         "7839",
@@ -1716,209 +1725,265 @@
   },
   "trending_add": [
     {
-      "count": 369360,
-      "player_id": "9482"
-    },
-    {
-      "count": 329294,
-      "player_id": "13414"
-    },
-    {
-      "count": 97248,
-      "player_id": "3286"
-    },
-    {
-      "count": 90923,
-      "player_id": "13311"
-    },
-    {
-      "count": 84894,
-      "player_id": "10213"
-    },
-    {
-      "count": 71325,
-      "player_id": "2505"
-    },
-    {
-      "count": 54870,
-      "player_id": "4574"
-    },
-    {
-      "count": 50365,
+      "count": 2367743,
       "player_id": "11834"
     },
     {
-      "count": 38331,
-      "player_id": "8800"
+      "count": 1416432,
+      "player_id": "13296"
     },
     {
-      "count": 33306,
-      "player_id": "LV"
+      "count": 1181340,
+      "player_id": "6130"
     },
     {
-      "count": 31941,
-      "player_id": "8180"
+      "count": 1051250,
+      "player_id": "TB"
     },
     {
-      "count": 28755,
-      "player_id": "5012"
+      "count": 876729,
+      "player_id": "13414"
     },
     {
-      "count": 28342,
-      "player_id": "7002"
+      "count": 599277,
+      "player_id": "SF"
     },
     {
-      "count": 26280,
-      "player_id": "5850"
+      "count": 574614,
+      "player_id": "3161"
     },
     {
-      "count": 24296,
-      "player_id": "9502"
+      "count": 370836,
+      "player_id": "4993"
     },
     {
-      "count": 23848,
-      "player_id": "5849"
+      "count": 341048,
+      "player_id": "12472"
     },
     {
-      "count": 23810,
-      "player_id": "6083"
+      "count": 340328,
+      "player_id": "12492"
     },
     {
-      "count": 23698,
-      "player_id": "5854"
+      "count": 299632,
+      "player_id": "9228"
     },
     {
-      "count": 22784,
-      "player_id": "10235"
+      "count": 256479,
+      "player_id": "9486"
     },
     {
-      "count": 22740,
-      "player_id": "4039"
+      "count": 239562,
+      "player_id": "13337"
     },
     {
-      "count": 22707,
+      "count": 217176,
+      "player_id": "4066"
+    },
+    {
+      "count": 215034,
+      "player_id": "3286"
+    },
+    {
+      "count": 213608,
+      "player_id": "12545"
+    },
+    {
+      "count": 186180,
       "player_id": "4177"
     },
     {
-      "count": 21912,
-      "player_id": "1166"
+      "count": 182064,
+      "player_id": "4454"
     },
     {
-      "count": 20664,
-      "player_id": "12487"
+      "count": 160979,
+      "player_id": "12501"
     },
     {
-      "count": 20625,
-      "player_id": "13602"
+      "count": 153088,
+      "player_id": "3634"
     },
     {
-      "count": 19920,
-      "player_id": "13285"
+      "count": 129645,
+      "player_id": "13330"
+    },
+    {
+      "count": 122857,
+      "player_id": "11646"
+    },
+    {
+      "count": 118980,
+      "player_id": "12533"
+    },
+    {
+      "count": 89154,
+      "player_id": "12534"
+    },
+    {
+      "count": 83538,
+      "player_id": "2020"
     }
   ],
   "trending_drop": [
     {
-      "count": 63520,
-      "player_id": "10235"
+      "count": 485736,
+      "player_id": "JAX"
     },
     {
-      "count": 51856,
-      "player_id": "12487"
+      "count": 356488,
+      "player_id": "5849"
     },
     {
-      "count": 44824,
-      "player_id": "8121"
+      "count": 314055,
+      "player_id": "DET"
     },
     {
-      "count": 39789,
+      "count": 235542,
+      "player_id": "LV"
+    },
+    {
+      "count": 229221,
       "player_id": "9482"
     },
     {
-      "count": 24957,
-      "player_id": "9480"
+      "count": 221562,
+      "player_id": "11581"
     },
     {
-      "count": 23816,
-      "player_id": "4035"
+      "count": 193716,
+      "player_id": "8180"
     },
     {
-      "count": 23670,
-      "player_id": "8800"
+      "count": 193208,
+      "player_id": "10235"
     },
     {
-      "count": 23496,
-      "player_id": "11610"
-    },
-    {
-      "count": 23490,
+      "count": 191547,
       "player_id": "10219"
     },
     {
-      "count": 23220,
-      "player_id": "9511"
+      "count": 183498,
+      "player_id": "10213"
     },
     {
-      "count": 23103,
-      "player_id": "13330"
+      "count": 167058,
+      "player_id": "9756"
     },
     {
-      "count": 22914,
-      "player_id": "13417"
+      "count": 161632,
+      "player_id": "7567"
     },
     {
-      "count": 22470,
-      "player_id": "5850"
-    },
-    {
-      "count": 21800,
-      "player_id": "12493"
-    },
-    {
-      "count": 20997,
-      "player_id": "13298"
-    },
-    {
-      "count": 20292,
+      "count": 158640,
       "player_id": "13413"
     },
     {
-      "count": 20190,
-      "player_id": "12530"
+      "count": 155142,
+      "player_id": "9511"
     },
     {
-      "count": 19206,
-      "player_id": "6149"
+      "count": 152901,
+      "player_id": "8800"
     },
     {
-      "count": 19089,
-      "player_id": "421"
+      "count": 148815,
+      "player_id": "13298"
     },
     {
-      "count": 18909,
+      "count": 139706,
+      "player_id": "13311"
+    },
+    {
+      "count": 136482,
+      "player_id": "11563"
+    },
+    {
+      "count": 135310,
+      "player_id": "12469"
+    },
+    {
+      "count": 128168,
+      "player_id": "11610"
+    },
+    {
+      "count": 127384,
+      "player_id": "8121"
+    },
+    {
+      "count": 123568,
+      "player_id": "13294"
+    },
+    {
+      "count": 123390,
+      "player_id": "10222"
+    },
+    {
+      "count": 120835,
+      "player_id": "MIN"
+    },
+    {
+      "count": 119574,
       "player_id": "11624"
-    },
-    {
-      "count": 18630,
-      "player_id": "13337"
-    },
-    {
-      "count": 18480,
-      "player_id": "8154"
-    },
-    {
-      "count": 18248,
-      "player_id": "13281"
-    },
-    {
-      "count": 17664,
-      "player_id": "3321"
-    },
-    {
-      "count": 17500,
-      "player_id": "9225"
     }
   ],
   "recent_transactions": [
+    {
+      "status": "failed",
+      "type": "waiver",
+      "metadata": {
+        "notes": "Unfortunately, your roster will have too many players after this transaction."
+      },
+      "created": 1789264797270,
+      "settings": {
+        "seq": 1,
+        "waiver_bid": 0
+      },
+      "leg": 1,
+      "draft_picks": [],
+      "creator": "383523783878836224",
+      "transaction_id": "1404682006037647360",
+      "adds": {
+        "11834": 2
+      },
+      "drops": null,
+      "consenter_ids": [
+        2
+      ],
+      "roster_ids": [
+        2
+      ],
+      "status_updated": 1789311713690,
+      "waiver_budget": []
+    },
+    {
+      "status": "complete",
+      "type": "waiver",
+      "metadata": {
+        "notes": "Your waiver claim was processed successfully!"
+      },
+      "created": 1789264715575,
+      "settings": {
+        "seq": 0,
+        "waiver_bid": 0
+      },
+      "leg": 1,
+      "draft_picks": [],
+      "creator": "383523783878836224",
+      "transaction_id": "1404681663383883776",
+      "adds": {
+        "11199": 2
+      },
+      "drops": null,
+      "consenter_ids": [
+        2
+      ],
+      "roster_ids": [
+        2
+      ],
+      "status_updated": 1789311713690,
+      "waiver_budget": []
+    },
     {
       "status": "complete",
       "type": "waiver",
