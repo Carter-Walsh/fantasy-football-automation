@@ -5,11 +5,11 @@ name: Fantasy Pipeline (manual)
 # phone Shortcut hitting the GitHub API's workflow dispatch endpoint.
 on:
   workflow_dispatch: {}
-  schedule:
+  # schedule:
     # 12:00 UTC every Tuesday = 8:00am ET (EDT) / 7:00am ET (EST during
     # standard time). Adjust the hour below if you want a different local time
     # — GitHub Actions cron is always UTC and does not shift for daylight saving.
-    - cron: "0 17 * * 2"
+    # - cron: "0 17 * * 2"
 
 permissions:
   contents: write
